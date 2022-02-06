@@ -1,5 +1,6 @@
 package com.example.emailservice.controller;
 
+import com.example.emailservice.dto.SubscriptionRequest;
 import com.example.emailservice.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("/subscribe")
 @AllArgsConstructor
 public class EmailController {
 
@@ -22,15 +23,10 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @GetMapping
-    public @ResponseBody ResponseEntity sendSimpleEmail(@RequestParam String email) {
+    @PostMapping
+    public @ResponseBody ResponseEntity sendSimpleEmail(@RequestBody SubscriptionRequest subscriptionRequest) throws MessagingException {
 
-        try {
-            emailService.sendSimpleMessage(email);
-        } catch (MailException | MessagingException mailException) {
-            LOG.error("Error while sending out email..{}", mailException.getStackTrace());
-            return new ResponseEntity<>("Unable to send email", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            emailService.sendSimpleMessage(subscriptionRequest);
 
         return new ResponseEntity<>("Please check your inbox", HttpStatus.OK);
     }
